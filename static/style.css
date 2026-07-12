@@ -1,0 +1,386 @@
+/* =============================================================================
+   style.css — Telco Churn Predictor (v2)
+   Design concept: a refined developer-tool aesthetic — deep slate background,
+   indigo accent, generous type scale. Inspired by the visual language of
+   tools like Linear/Vercel rather than a neon "hacker console" look.
+   ============================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* ---- Palette ---- */
+  --bg:            #0d0f14;
+  --bg-panel:      #14171f;
+  --bg-panel-alt:  #1b1f2a;
+  --border:        #2a2f3d;
+  --border-bright: #3b4256;
+
+  --text-primary:   #eef0f4;
+  --text-secondary: #a1a8b8;
+  --text-dim:       #6b7284;
+
+  --signal:        #818cf8;  /* indigo — primary accent / low risk */
+  --signal-dim:     rgba(129, 140, 248, 0.16);
+  --warning:       #fbbf24;  /* amber — medium risk */
+  --warning-dim:    rgba(251, 191, 36, 0.16);
+  --critical:      #fb7185;  /* rose — high risk */
+  --critical-dim:   rgba(251, 113, 133, 0.16);
+
+  --font-display: 'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(129, 140, 248, 0.08), transparent 45%),
+    var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 17px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* =============================================================================
+   Shell / layout
+   ============================================================================= */
+
+.console {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 28px 90px;
+}
+
+.console-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 24px;
+  margin-bottom: 40px;
+}
+
+.console-header .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 10px 2px var(--signal);
+  flex-shrink: 0;
+}
+
+.console-header h1 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+
+.console-header .tag {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.error-banner {
+  background: var(--critical-dim);
+  border: 1px solid var(--critical);
+  color: #ffd3da;
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  font-size: 15px;
+  margin-bottom: 28px;
+}
+
+.error-banner::before {
+  content: "! ";
+  font-weight: 700;
+}
+
+/* =============================================================================
+   Form sections
+   ============================================================================= */
+
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 24px;
+  background: var(--bg-panel-alt);
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-index {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--signal);
+  border: 1px solid var(--signal);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.panel-header h2 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.panel-body {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px 24px;
+}
+
+@media (max-width: 640px) {
+  .panel-body { grid-template-columns: 1fr; }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field.span-2 { grid-column: span 2; }
+@media (max-width: 640px) {
+  .field.span-2 { grid-column: span 1; }
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.field select,
+.field input {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--text-primary);
+  background: var(--bg);
+  border: 1px solid var(--border-bright);
+  border-radius: 8px;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field select:focus,
+.field input:focus {
+  border-color: var(--signal);
+  box-shadow: 0 0 0 4px var(--signal-dim);
+}
+
+.field select:disabled,
+.field input:disabled {
+  color: var(--text-dim);
+  background: var(--bg-panel-alt);
+  cursor: not-allowed;
+}
+
+.field .hint {
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+/* =============================================================================
+   Submit
+   ============================================================================= */
+
+.submit-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.btn-run {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+  color: #0b0d14;
+  background: var(--signal);
+  border: none;
+  border-radius: var(--radius);
+  padding: 15px 32px;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: transform 0.1s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.btn-run:hover {
+  background: #929cf9;
+  box-shadow: 0 0 28px -4px var(--signal);
+  transform: translateY(-1px);
+}
+
+.btn-run:active { transform: translateY(0); }
+
+/* =============================================================================
+   Result page
+   ============================================================================= */
+
+.result-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 44px 36px;
+  text-align: center;
+  animation: reveal 0.4s ease;
+}
+
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.result-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+
+.result-label {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 700;
+  margin: 0 0 32px;
+  letter-spacing: -0.01em;
+}
+
+.result-label.churn    { color: var(--critical); }
+.result-label.stay     { color: var(--signal); }
+
+/* Signal bars */
+.signal-meter {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  height: 88px;
+  margin: 0 auto 22px;
+}
+
+.signal-bar {
+  width: 20px;
+  border-radius: 4px 4px 0 0;
+  background: var(--border-bright);
+  transition: background 0.3s ease;
+}
+
+.signal-bar:nth-child(1) { height: 20%; }
+.signal-bar:nth-child(2) { height: 40%; }
+.signal-bar:nth-child(3) { height: 60%; }
+.signal-bar:nth-child(4) { height: 80%; }
+.signal-bar:nth-child(5) { height: 100%; }
+
+.signal-bar.active.low      { background: var(--signal); box-shadow: 0 0 12px -1px var(--signal); }
+.signal-bar.active.medium   { background: var(--warning); box-shadow: 0 0 12px -1px var(--warning); }
+.signal-bar.active.high     { background: var(--critical); box-shadow: 0 0 12px -1px var(--critical); }
+
+.result-percent {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.result-percent strong {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.risk-chip {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-top: 10px;
+}
+
+.risk-chip.low    { color: var(--signal);   background: var(--signal-dim);   border: 1px solid var(--signal); }
+.risk-chip.medium { color: var(--warning);  background: var(--warning-dim);  border: 1px solid var(--warning); }
+.risk-chip.high   { color: var(--critical); background: var(--critical-dim); border: 1px solid var(--critical); }
+
+.result-breakdown {
+  display: flex;
+  justify-content: center;
+  gap: 44px;
+  margin-top: 36px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+}
+
+.breakdown-item .num {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.breakdown-item .cap {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 36px;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-bright);
+  padding-bottom: 2px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.back-link:hover {
+  color: var(--signal);
+  border-color: var(--signal);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .result-panel { animation: none; }
+  .btn-run { transition: none; }
+}

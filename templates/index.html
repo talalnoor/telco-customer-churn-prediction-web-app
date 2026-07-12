@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telco Churn Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="console">
+
+    <div class="console-header">
+      <div class="brand">
+        <span class="brand-led"></span>
+        <h1>Churn Predictor</h1>
+      </div>
+      <span class="tag">Account Risk Console</span>
+    </div>
+
+    {% if error %}
+      <div class="error-banner">{{ error }}</div>
+    {% endif %}
+
+    <form action="{{ url_for('predict') }}" method="POST" id="churn-form">
+
+      <!-- ================= Panel 1: Customer Profile ================= -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-index">01</span>
+          <h2>Customer Profile</h2>
+        </div>
+        <div class="panel-body">
+          <div class="field">
+            <label for="gender">Gender</label>
+            <select name="gender" id="gender" required>
+              {% for opt in field_options['gender'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="SeniorCitizen">Senior Citizen</label>
+            <select name="SeniorCitizen" id="SeniorCitizen" required>
+              {% for opt in field_options['SeniorCitizen'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="Partner">Has Partner</label>
+            <select name="Partner" id="Partner" required>
+              {% for opt in field_options['Partner'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="Dependents">Has Dependents</label>
+            <select name="Dependents" id="Dependents" required>
+              {% for opt in field_options['Dependents'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="tenure">Tenure (months)</label>
+            <input type="number" name="tenure" id="tenure" min="0" max="100" step="1" required>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= Panel 2: Services ================= -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-index">02</span>
+          <h2>Services Subscribed</h2>
+        </div>
+        <div class="panel-body">
+          <div class="field">
+            <label for="PhoneService">Phone Service</label>
+            <select name="PhoneService" id="PhoneService" required>
+              {% for opt in field_options['PhoneService'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="MultipleLines">Multiple Lines</label>
+            <select name="MultipleLines" id="MultipleLines" required>
+              {% for opt in field_options['MultipleLines'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+            <span class="hint" data-hint="phone">Requires phone service</span>
+          </div>
+
+          <div class="field">
+            <label for="InternetService">Internet Service</label>
+            <select name="InternetService" id="InternetService" required>
+              {% for opt in field_options['InternetService'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="OnlineSecurity">Online Security</label>
+            <select name="OnlineSecurity" id="OnlineSecurity" class="internet-dependent" required>
+              {% for opt in field_options['OnlineSecurity'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="OnlineBackup">Online Backup</label>
+            <select name="OnlineBackup" id="OnlineBackup" class="internet-dependent" required>
+              {% for opt in field_options['OnlineBackup'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="DeviceProtection">Device Protection</label>
+            <select name="DeviceProtection" id="DeviceProtection" class="internet-dependent" required>
+              {% for opt in field_options['DeviceProtection'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="TechSupport">Tech Support</label>
+            <select name="TechSupport" id="TechSupport" class="internet-dependent" required>
+              {% for opt in field_options['TechSupport'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="StreamingTV">Streaming TV</label>
+            <select name="StreamingTV" id="StreamingTV" class="internet-dependent" required>
+              {% for opt in field_options['StreamingTV'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="StreamingMovies">Streaming Movies</label>
+            <select name="StreamingMovies" id="StreamingMovies" class="internet-dependent" required>
+              {% for opt in field_options['StreamingMovies'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+            <span class="hint" data-hint="internet">Requires internet service</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= Panel 3: Account & Billing ================= -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-index">03</span>
+          <h2>Account &amp; Billing</h2>
+        </div>
+        <div class="panel-body">
+          <div class="field">
+            <label for="Contract">Contract Type</label>
+            <select name="Contract" id="Contract" required>
+              {% for opt in field_options['Contract'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="PaperlessBilling">Paperless Billing</label>
+            <select name="PaperlessBilling" id="PaperlessBilling" required>
+              {% for opt in field_options['PaperlessBilling'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field span-2">
+            <label for="PaymentMethod">Payment Method</label>
+            <select name="PaymentMethod" id="PaymentMethod" required>
+              {% for opt in field_options['PaymentMethod'] %}
+                <option value="{{ opt }}">{{ opt }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="MonthlyCharges">Monthly Charges ($)</label>
+            <input type="number" name="MonthlyCharges" id="MonthlyCharges" min="0" step="0.01" required>
+          </div>
+
+          <div class="field">
+            <label for="TotalCharges">Total Charges ($)</label>
+            <input type="number" name="TotalCharges" id="TotalCharges" min="0" step="0.01" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button type="submit" class="btn-run">Run Prediction</button>
+      </div>
+
+    </form>
+  </div>
+
+  <script>
+    // ---------------------------------------------------------------------
+    // Dependent-field logic:
+    // The model was trained with "No phone service" / "No internet service"
+    // as real categories, so when the parent service is off, we lock the
+    // dependent fields to that exact value instead of letting the user pick
+    // something the model would treat as contradictory.
+    // ---------------------------------------------------------------------
+    const phoneService = document.getElementById('PhoneService');
+    const multipleLines = document.getElementById('MultipleLines');
+
+    const internetService = document.getElementById('InternetService');
+    const internetDependents = document.querySelectorAll('.internet-dependent');
+
+    function syncPhoneDependents() {
+      const on = phoneService.value === 'Yes';
+      multipleLines.disabled = !on;
+      if (!on) multipleLines.value = 'No phone service';
+    }
+
+    function syncInternetDependents() {
+      const on = internetService.value !== 'No';
+      internetDependents.forEach(function (select) {
+        select.disabled = !on;
+        if (!on) select.value = 'No internet service';
+      });
+    }
+
+    phoneService.addEventListener('change', syncPhoneDependents);
+    internetService.addEventListener('change', syncInternetDependents);
+
+    // Run once on load in case the browser restores a previous selection
+    syncPhoneDependents();
+    syncInternetDependents();
+  </script>
+</body>
+</html>

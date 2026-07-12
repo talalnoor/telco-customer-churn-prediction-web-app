@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prediction Result — Churn Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="console">
+
+    <div class="console-header">
+      <div class="brand">
+        <span class="brand-led"></span>
+        <h1>Churn Predictor</h1>
+      </div>
+      <span class="tag">Account Risk Console</span>
+    </div>
+
+    {% set risk_class = 'high' if result.risk_level == 'High Risk' else ('medium' if result.risk_level == 'Medium Risk' else 'low') %}
+    {% set bars_active = ((result.churn_probability // 20) | int) + 1 %}
+    {% set bars_active = 5 if bars_active > 5 else bars_active %}
+
+    <div class="result-panel">
+      <div class="result-eyebrow">Prediction Result</div>
+      <h2 class="result-label {{ 'churn' if result.will_churn else 'stay' }}">
+        {{ result.label }}
+      </h2>
+
+      <div class="signal-meter">
+        {% for i in range(1, 6) %}
+          <div class="signal-bar {{ 'active ' ~ risk_class if i <= bars_active else '' }}"></div>
+        {% endfor %}
+      </div>
+
+      <div class="result-percent">
+        Churn probability: <strong>{{ result.churn_probability }}%</strong>
+      </div>
+
+      <span class="risk-chip {{ risk_class }}">{{ result.risk_level }}</span>
+
+      <div class="result-breakdown">
+        <div class="breakdown-item">
+          <div class="num">{{ result.churn_probability }}%</div>
+          <div class="cap">Will Churn</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="num">{{ result.stay_probability }}%</div>
+          <div class="cap">Will Stay</div>
+        </div>
+      </div>
+
+      <a href="{{ url_for('home') }}" class="back-link">&larr; Run another prediction</a>
+    </div>
+
+  </div>
+</body>
+</html>
